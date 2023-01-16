@@ -37,3 +37,6 @@ def get_sample():
 def get_book_id(id):
     return Book.query.get(id)
 
+def get_author(id):
+    return Author.query.get(id)
+
