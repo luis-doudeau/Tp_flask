@@ -15,7 +15,7 @@ def mkpath(p):
             )
 
 from flask_sqlalchemy import SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = ('sqlite:///'
-+mkpath('../books.db'))
+app.config['SQLALCHEMY_DATABASE_URI'] = ('sqlite:///' + mkpath('../books.db'))
+app. config ['SECRET_KEY'] = "069b85f6-3d1a-4c89-8d17-83e9b577da10"
 app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
