@@ -29,6 +29,14 @@ class Book(db.Model):
                 
     def __repr__(self):
       return "<Book (%d) %s>" % (self.id, self.title)
+    
+    def to_dict(self):
+        return {
+            "id" : self.id,
+            "img" : self.img,
+            "prix" : self.price,
+            "titre" : self.title,
+        }
 
 
 def get_sample():
@@ -37,6 +45,23 @@ def get_sample():
 def get_book_id(id):
     return Book.query.get(id)
 
+def get_all_books():
+    return Book.query
+
 def get_author(id):
     return Author.query.get(id)
 
+def get_info_all_books(id, titre, prix, auteur_id):
+    res = Book.query
+    if(id != ""):
+        res = res.filter(Book.id == id)
+    if(titre != ""):
+        res = res.filter(Book.title == titre)
+
+    if(prix != ""):
+        res = res.filter(Book.price == prix)
+
+    if(auteur_id != ""):
+        res = res.filter(Book.author_id == auteur_id)
+    
+    return res

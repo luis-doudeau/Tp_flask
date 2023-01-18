@@ -1,6 +1,6 @@
 from .app import app, db
-from flask import render_template, redirect, url_for
-from .models import get_sample, get_book_id, get_author
+from flask import render_template, redirect, url_for, request
+from .models import get_sample, get_book_id, get_author, get_info_all_books
 
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField
@@ -18,6 +18,31 @@ def home():
         title="My Books !",
         books=get_sample())
 
+@app.route("/api/dataBooks", methods = ["POST"])
+def dataBooks():
+    print("a")
+    data = {"data":[]}
+    id = request.form["id"] 
+    titre = request.form["titre"] 
+    prix = request.form["prix"] 
+    auteur_id = request.form["auteur_id"]
+    books = get_info_all_books(id, titre, prix, auteur_id)
+    print("a")
+    print(books)
+    for livre in books:
+        
+        data["data"].append({
+            "id" :livre.id,
+            "img" : livre.img,
+            "titre" : livre.title,
+            "prix" :livre.price,
+            "auteur_id" : livre.author_id
+        })
+    return data
+
+@app.route('/Livres')
+def Livres():
+    return render_template("gerer_books.html", title= "Livres")
 
 @app.route("/detail/<id>")
 def detail(id):

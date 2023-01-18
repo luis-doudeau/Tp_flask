@@ -1,0 +1,232 @@
+{% extends 'baseBS.html' %}
+
+<body>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="row">
+                    <div class="col-12 col-md-8"></div>
+                    <div class="col-6 col-md-4">
+                        <button id="ajouterLivre" type="button" class="btn btn-success">Ajouter</button>
+                        <button id="Filtres" type="button" class="btn btn-success">Filtrer</button>
+                        <button id="buttonmodalSupr" type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSupprimer">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+            <table id="livres" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Prix</th>
+                        <th>Auteur</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="modal fade" id="modalSupprimer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Supprimer</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Etes-vous sur de vouloir supprimer ce client ?</p>
+                  <span id="livresupprimer"></span>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                  <button type="button" class="btn btn-danger" id="deleteLivre" data-dismiss="modal">Supprimer</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <form method="POST">
+            <div class="modal fade" id="modalAjouterLivre" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nouveau Livre</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="IdLivre" class="label label-primary">Id</label>
+                            </div>
+                            <div class="col-8">
+                                <input required id="IdLivre">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="ImageLivre" class="label label-primary">Image</label>
+                            </div>
+                            <div class="col-8">
+                                <input required  id="ImageLivre">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="TitreLivre" class="label label-primary">Titre</label>
+                            </div>
+                            <div class="col-8">
+                                <input required id="TitreLivre" value="01/01/2022">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="PrixLivre" class="label label-primary">Prix</label>
+                            </div>
+                            <div class="col-8">
+                                <input required id="PrixLivre">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="AuteurLivre" class="label label-primary">Auteur</label>
+                            </div>
+                            <div class="col-8">
+                                <input required  id="AuteurLivre">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-success" id="ajouterLivre2">Créer</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </form>
+        <div class="modal" id="modalFiltreClients" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filtre<h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="IDFiltre" class="k-label">ID</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="IDFiltre">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="TitreFiltre" class="k-label">Titre</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="TitreFiltre">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="PrixFiltre" class="label label-primary">Prix</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input  id="PrixFiltre">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="AuteurFiltre" class="label label-primary">Auteur</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="AuteurFiltre">
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-success" id="savefilter">Sauvegarder</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+<script>
+
+    $("#buttonmodalSupr").prop("disabled",true)
+
+        $(document).ready(function() {
+            $("#IDFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer l'id d'un livre",
+                format: "{0:n0}",
+                size : "medium",
+            });
+            $("#TitreFiltre").kendoTextBox({
+                placeholder: "Entrer le nom d'un livre",
+                size : "medium",
+            });
+            
+            $("#PrixFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer le prix d'un livre",
+                format: "{0:n0}",
+                size : "medium",
+            });
+
+            $("#AuteurFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer l'id d'un auteur",
+                size : "medium",
+                format: "{0:n0}",
+            });
+        
+
+        var table = $('#livres').DataTable({
+            ajax: {
+                url:'/api/dataBooks',
+                type:"POST",
+                data:function(c){
+                    if(c!=undefined){
+                        c.id = $("#IDFiltre").val();
+                        c.titre = $("#TitreFiltre").val();
+                        c.prix = $("#PrixFiltre").val();
+                        c.auteur_id = $("#AuteurFiltre").val();
+
+                    }
+                }
+            },
+            columns: [
+                {data: 'id',className: "dt-center"},
+                {data: 'img',className: "dt-center"},
+                {data: 'titre',className: "dt-center"},
+                {data: 'prix',className: "dt-center"},
+                {data: 'auteur_id',className: "dt-center"},
+            ],
+            info:true,
+            scroller:true,
+            scrollY:500,
+            paging: false,
+            info: false,
+            "searching": false,
+        });
+    });
+</script>
