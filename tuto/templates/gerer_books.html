@@ -1,8 +1,8 @@
 {% extends 'baseBS.html' %}
-
+{% block content %}
 <body>
     <section>
-        <div class="container">
+        <div class="container " style="margin-top: 5em" >
             <div class="row">
                 <div class="row">
                     <div class="col-12 col-md-8"></div>
@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <table id="livres" class="table table-striped">
+            <table id="livres" class="table table-striped" >
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -36,7 +36,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <p>Etes-vous sur de vouloir supprimer ce client ?</p>
+                  <p>Etes-vous sur de vouloir supprimer ce livre ?</p>
                   <span id="livresupprimer"></span>
                 </div>
                 <div class="modal-footer">
@@ -110,7 +110,7 @@
                 </div>
             </div>
         </form>
-        <div class="modal" id="modalFiltreClients" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal" id="modalFiltreLivres" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -165,7 +165,8 @@
         </div>
     </section>
 </body>
-
+{% endblock %}
+{% block scripts %}
 <script>
 
     $("#buttonmodalSupr").prop("disabled",true)
@@ -191,35 +192,35 @@
                 size : "medium",
             });
 
-            $("#AuteurFiltre").kendoNumericTextBox({
-                culture: "fr-FR",
-                min:0,
-                placeholder: "Entrer l'id d'un auteur",
+            $("#AuteurFiltre").kendoTextBox({
+                placeholder: "Entrer le nom d'un auteur",
                 size : "medium",
-                format: "{0:n0}",
             });
-        
 
-        var table = $('#livres').DataTable({
+            let table = $('#livres').DataTable({
             ajax: {
-                url:'/api/dataBooks',
+                url:"/api/dataBooks",
                 type:"POST",
                 data:function(c){
                     if(c!=undefined){
                         c.id = $("#IDFiltre").val();
                         c.titre = $("#TitreFiltre").val();
                         c.prix = $("#PrixFiltre").val();
-                        c.auteur_id = $("#AuteurFiltre").val();
-
+                        c.auteur = $("#AuteurFiltre").val();
                     }
+                    return c
                 }
             },
             columns: [
                 {data: 'id',className: "dt-center"},
-                {data: 'img',className: "dt-center"},
+                {data: 'img',className: "dt-center", render: function(data){
+                    return "<img src={{url_for('static', filename = 'images/Livres')}} alt='Image introuvable'> ".replace('Livres', data)
+                }},
                 {data: 'titre',className: "dt-center"},
-                {data: 'prix',className: "dt-center"},
-                {data: 'auteur_id',className: "dt-center"},
+                {data: 'prix',className: "dt-center", render:function(data){
+                    return data + "€"
+                }},
+                {data: 'auteur',className: "dt-center"},
             ],
             info:true,
             scroller:true,
@@ -228,5 +229,39 @@
             info: false,
             "searching": false,
         });
+
+        $("#deleteLivre").on("click",function(){
+                $.ajax({
+                    url:'{{url_for("deleteLivre")}}',
+                    type:'POST',
+                    data:{id:idColumn},
+                success: function(){
+                    table.ajax.reload();
+                } 
+            });       
+        });
+
+        $("#livres").on("click", "tr", function() {
+            if(row !=null){
+                $(row).css('background-color', "");     
+            }
+            $("#buttonmodalSupr").prop("disabled",false)
+            row = this;
+            $(this).css('background-color', "#AFE1AF");
+            idColumn = table.column(0).data()[$(this).index()]; // Récupération de la colonne ID
+            $("#livresupprimer").html($(row)[0].childNodes[2].innerHTML)
+        });
+
+        $("#savefilter").on("click",function(){
+            table.ajax.reload();
+            $("#modalFiltreLivres").modal("hide")
+        });
+
+        $("#Filtres").on("click",function(){
+            $("#modalFiltreLivres").modal("show")
+        })
+        
     });
 </script>
+{% endblock %}
+

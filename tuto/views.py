@@ -1,6 +1,6 @@
 from .app import app, db
 from flask import render_template, redirect, url_for, request
-from .models import get_sample, get_book_id, get_author, get_info_all_books
+from .models import get_sample, get_book_id, get_author, get_info_all_books, delete_livre
 
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField
@@ -20,15 +20,16 @@ def home():
 
 @app.route("/api/dataBooks", methods = ["POST"])
 def dataBooks():
-    print("a")
     data = {"data":[]}
-    id = request.form["id"] 
+
+    id = request.form["id"]
+
     titre = request.form["titre"] 
+
     prix = request.form["prix"] 
-    auteur_id = request.form["auteur_id"]
-    books = get_info_all_books(id, titre, prix, auteur_id)
-    print("a")
-    print(books)
+
+    auteur = request.form["auteur"]
+    books = get_info_all_books(id, titre, prix, auteur).all()
     for livre in books:
         
         data["data"].append({
@@ -36,13 +37,20 @@ def dataBooks():
             "img" : livre.img,
             "titre" : livre.title,
             "prix" :livre.price,
-            "auteur_id" : livre.author_id
+            "auteur" : livre.author.name
         })
     return data
 
 @app.route('/Livres')
 def Livres():
     return render_template("gerer_books.html", title= "Livres")
+
+@app.route('/deleteLivre')
+def deleteLivre():
+    save = delete_livre(request.form["id"])
+    return "true" if save == True else save
+
+
 
 @app.route("/detail/<id>")
 def detail(id):
