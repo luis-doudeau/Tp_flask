@@ -170,7 +170,8 @@
 <script>
 
     $("#buttonmodalSupr").prop("disabled",true)
-
+    var row = null;
+    var table = null;
         $(document).ready(function() {
             $("#IDFiltre").kendoNumericTextBox({
                 culture: "fr-FR",
@@ -234,7 +235,7 @@
                 $.ajax({
                     url:'{{url_for("deleteLivre")}}',
                     type:'POST',
-                    data:{id:idColumn},
+                    data:{id:$(row)[0].childNodes[0]},
                 success: function(){
                     table.ajax.reload();
                 } 
