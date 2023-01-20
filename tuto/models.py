@@ -1,4 +1,6 @@
 from .app import db
+from sqlalchemy.sql.expression import func
+
 
 class Author(db.Model):
     """
@@ -26,9 +28,16 @@ class Book(db.Model):
     # dans la classe Author
     author = db.relationship("Author",
                 backref=db.backref("books", lazy="dynamic"))
+
+    def __init__(self,price,title,url,img,author_id):
+        self.price = price
+        self.title = title
+        self.url = url
+        self.img = img
+        self.author_id = author_id
                 
     def __repr__(self):
-      return "<Book (%d) %s>" % (self.id, self.title)
+      return "<Book %s>" % (self.title)
 
 
 def get_sample():
@@ -67,3 +76,26 @@ def delete_livre(id):
     except:
         db.session.rollback()
         return False
+    
+
+def ajouter_livre(TitreLivre, PrixLivre, UrlLivre, ImageLivre, IdAuteurLivre):
+    print(TitreLivre)
+    print(PrixLivre)
+    print(UrlLivre)
+    print(ImageLivre)
+    print(IdAuteurLivre)
+    livre = Book(price   = PrixLivre,
+                title   = TitreLivre,
+                url     = UrlLivre,
+                img     = ImageLivre,
+                author_id = IdAuteurLivre) 
+    print(livre)
+    db.session.add(livre)
+
+    try:
+        db.session.commit()
+        return True
+    except Exception as e:
+        
+        db.session.rollback()
+        return repr(e)

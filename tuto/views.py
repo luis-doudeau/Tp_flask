@@ -1,6 +1,7 @@
+from crypt import methods
 from .app import app, db
 from flask import render_template, redirect, url_for, request
-from .models import get_sample, get_book_id, get_author, get_info_all_books, delete_livre
+from .models import get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre
 
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField
@@ -31,7 +32,6 @@ def dataBooks():
     auteur = request.form["auteur"]
     books = get_info_all_books(id, titre, prix, auteur).all()
     for livre in books:
-        
         data["data"].append({
             "id" :livre.id,
             "img" : livre.img,
@@ -39,13 +39,26 @@ def dataBooks():
             "prix" :livre.price,
             "auteur" : livre.author.name
         })
+    
     return data
 
 @app.route('/Livres')
 def Livres():
     return render_template("gerer_books.html", title= "Livres")
 
-@app.route('/deleteLivre')
+@app.route('/AddLivre',methods=['POST'])
+def AddLivre():
+    print("a")
+    TitreLivre = request.form["TitreLivre"]
+    PrixLivre = int(request.form["PrixLivre"])
+    UrlLivre = request.form["UrlLivre"]
+    ImageLivre = request.form["ImageLivre"]
+    IdAuteurLivre = int(request.form["IdAuteurLivre"])
+
+    save = ajouter_livre(TitreLivre, PrixLivre, UrlLivre, ImageLivre, IdAuteurLivre)
+    return "true" if save == True else save
+
+@app.route('/deleteLivre', methods = ["POST"])
 def deleteLivre():
     save = delete_livre(request.form["id"])
     return "true" if save == True else save

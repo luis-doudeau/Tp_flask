@@ -60,23 +60,6 @@
 
                         <div class="row">
                             <div class="col-4">
-                                <label for="IdLivre" class="label label-primary">Id</label>
-                            </div>
-                            <div class="col-8">
-                                <input required id="IdLivre">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-4">
-                                <label for="ImageLivre" class="label label-primary">Image</label>
-                            </div>
-                            <div class="col-8">
-                                <input required  id="ImageLivre">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4">
                                 <label for="TitreLivre" class="label label-primary">Titre</label>
                             </div>
                             <div class="col-8">
@@ -94,10 +77,29 @@
 
                         <div class="row">
                             <div class="col-4">
-                                <label for="AuteurLivre" class="label label-primary">Auteur</label>
+                                <label for="UrlLivre" class="label label-primary">Url image</label>
                             </div>
                             <div class="col-8">
-                                <input required  id="AuteurLivre">
+                                <input required  id="UrlLivre">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="ImageLivre" class="label label-primary">Nom de l'image</label>
+                            </div>
+                            <div class="col-8">
+                                <input required  id="ImageLivre">
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="IdAuteurLivre" class="label label-primary">ID Auteur</label>
+                            </div>
+                            <div class="col-8">
+                                <input required  id="IdAuteurLivre">
                             </div>
                         </div>
 
@@ -169,6 +171,12 @@
 {% block scripts %}
 <script>
 
+    function isNumeric(str) {
+        if (typeof str != "string") return false // we only process strings!  
+        return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+                !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
     $("#buttonmodalSupr").prop("disabled",true)
     var row = null;
     var table = null;
@@ -235,7 +243,7 @@
                 $.ajax({
                     url:'{{url_for("deleteLivre")}}',
                     type:'POST',
-                    data:{id:$(row)[0].childNodes[0]},
+                    data:{id:$(row)[0].childNodes[0].innerHTML},
                 success: function(){
                     table.ajax.reload();
                 } 
@@ -261,8 +269,108 @@
         $("#Filtres").on("click",function(){
             $("#modalFiltreLivres").modal("show")
         })
+
+        const container = document.getElementById("modalAjouterLivre");
+        const modal = new bootstrap.Modal(container);
+        document.getElementById("ajouterLivre").addEventListener("click", function () {
+            modal.show();
+        });
+
+        document.getElementById("ajouterLivre2").addEventListener("click", function () {
+            var TitreLivre = $("#TitreLivre").val()
+            var PrixLivre = $("#PrixLivre").val()
+            var UrlLivre = $("#UrlLivre").val()
+            var ImageLivre = $("#ImageLivre").val() 
+            var IdAuteurLivre = $("#IdAuteurLivre").val()
+
+            if(ImageLivre != "" && UrlLivre != "" && TitreLivre != "" && IdAuteurLivre != "" && isNumeric(IdAuteurLivre) && PrixLivre != ""&& isNumeric(PrixLivre)){
+                modal.hide();
+            }
+        });
+
+        $("#ajouterLivre2").on("click",function(){
+            var TitreLivre = $("#TitreLivre").val()
+            var PrixLivre = $("#PrixLivre").val()
+            var UrlLivre = $("#UrlLivre").val()
+            var ImageLivre = $("#ImageLivre").val()
+            var IdAuteurLivre = $("#IdAuteurLivre").val()
+
+            TitreLivre == ""?$("#TitreLivre").css("border","1px solid red"):$("#TitreLivre").css("border","");
+            PrixLivre == "" || !isNumeric(PrixLivre) ?$("#PrixLivre").css("border","1px solid red"):$("#PrixLivre").css("border","");
+            UrlLivre == ""?$("#UrlLivre").css("border","1px solid red"):$("#UrlLivre").css("border","");
+            ImageLivre == ""?$("#ImageLivre").css("border","1px solid red"):$("#ImageLivre").css("border","");
+            IdAuteurLivre == "" || !isNumeric(IdAuteurLivre)?$("#IdAuteurLivre").css("border","1px solid red"):$("#IdAuteurLivre").css("border","");
+
+            $("#loader-background").show()
         
-    });
+            if(ImageLivre != "" && UrlLivre != "" && TitreLivre != "" && IdAuteurLivre != "" && isNumeric(IdAuteurLivre) && PrixLivre != ""&& isNumeric(PrixLivre)){
+                $.ajax({
+                url:'{{url_for("AddLivre")}}',
+                type:'POST',
+                data:{
+                    TitreLivre : TitreLivre,
+                    PrixLivre : PrixLivre,
+                    UrlLivre : UrlLivre,
+                    ImageLivre : ImageLivre,
+                    IdAuteurLivre:IdAuteurLivre
+            },
+
+            success: function(response){ 
+                table.ajax.reload();
+                $("#loader-background").hide()
+                if(response == "true"){
+                
+                    $("#TitreLivre").data("kendoTextBox").value("")
+                    $("#PrixLivre").data("kendoNumericTextBox").value("")
+                    $("#UrlLivre").data("kendoTextBox").value("")
+                    $("#ImageLivre").data("kendoTextBox").value("")
+                    $("#IdAuteurLivre").data("kendoNumericTextBox").value("")
+
+                }else{
+                    alert(response)
+                }
+            } 
+        });
+        }
+        })
+        $("#TitreLivre").kendoTextBox({
+            placeholder: "Titre",
+            fillMode: "solid",
+            size : "medium",
+        });
+
+        $("#PrixLivre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                value : 0,
+                placeholder: "Prix",
+                format: "{0:n0}",
+                size : "medium",
+        });
+
+
+        $("#UrlLivre").kendoTextBox({
+            placeholder: "Url d'amazon",
+            fillMode: "solid",
+            size : "medium",
+        });
+
+        $("#ImageLivre").kendoTextBox({
+            placeholder: "Nom de l'image",
+            fillMode: "solid",
+            size : "medium",
+        });
+
+        $("#IdAuteurLivre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                value : 0,
+                placeholder: "ID de l'auteur",
+                format: "{0:n0}",
+                size : "medium",
+        });
+
+        });
+
 </script>
 {% endblock %}
-
