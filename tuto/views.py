@@ -1,7 +1,8 @@
 from crypt import methods
 from .app import app, db
 from flask import render_template, redirect, url_for, request
-from .models import get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre
+from .models import get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
+get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur
 
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField
@@ -18,6 +19,40 @@ def home():
         "booksBS.html", 
         title="My Books !",
         books=get_sample())
+
+@app.route("/api/dataAuteurs", methods = ["POST"])
+def dataAuteurs():
+    data = {"data":[]}
+    id = request.form["id"]
+
+    nom = request.form["nom"] 
+
+
+    auteurs = get_all_info_auteurs(id, nom).all()
+    for auteur in auteurs:
+        data["data"].append({
+            "id" :auteur.id,
+            "nom" : auteur.name,
+            "nbLivres" : get_nb_livres_auteur(auteur.id),
+        })
+    return data
+
+@app.route('/AddAuteur',methods=['POST'])
+def AddAuteur():
+    nomAuteur = request.form["NomAuteur"]
+
+    save = ajouter_auteur(nomAuteur)
+    return "true" if save == True else save
+
+@app.route('/Auteurs')
+def Auteurs():
+    return render_template("gerer_author.html", title= "Auteurs")
+
+@app.route('/deleteAuteur', methods = ["POST"])
+def deleteAuteur():
+    save = delete_auteur(request.form["id"])
+    return "true" if save == True else save
+
 
 @app.route("/api/dataBooks", methods = ["POST"])
 def dataBooks():

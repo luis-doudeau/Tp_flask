@@ -10,7 +10,7 @@ class Author(db.Model):
     name = db.Column(db.String(100))
 
     def __repr__(self):
-        return "<Author (%d) %s>" % (self.id, self.name)
+        return "<Author (%d) %s>" % (self.name)
 
 
 class Book(db.Model):
@@ -77,19 +77,45 @@ def delete_livre(id):
         db.session.rollback()
         return False
     
+def delete_auteur_livre(id):
+    livres = Book.query.filter(Book.author.has(Author.id  == id))
+    db.session.delete(livres)
+    try:
+        db.session.commit()
+        return True
+    except:
+        db.session.rollback()
+        return False
+    
+def delete_auteur(id):
+    delete_auteur_livre(id)
+    auteur = Author.query.get(id)
+    db.session.delete(auteur)
+    try:
+        db.session.commit()
+        return True
+    except:
+        db.session.rollback()
+        return False
 
+def ajouter_auteur(nomAuteur):
+    auteur = Author(name   = nomAuteur) 
+    db.session.add(auteur)
+
+    try:
+        db.session.commit()
+        return True
+    except Exception as e:
+        
+        db.session.rollback()
+        return repr(e)
+    
 def ajouter_livre(TitreLivre, PrixLivre, UrlLivre, ImageLivre, IdAuteurLivre):
-    print(TitreLivre)
-    print(PrixLivre)
-    print(UrlLivre)
-    print(ImageLivre)
-    print(IdAuteurLivre)
     livre = Book(price   = PrixLivre,
                 title   = TitreLivre,
                 url     = UrlLivre,
                 img     = ImageLivre,
                 author_id = IdAuteurLivre) 
-    print(livre)
     db.session.add(livre)
 
     try:
@@ -99,3 +125,14 @@ def ajouter_livre(TitreLivre, PrixLivre, UrlLivre, ImageLivre, IdAuteurLivre):
         
         db.session.rollback()
         return repr(e)
+    
+def get_all_info_auteurs(id, nom):
+    res = Author.query
+    if(id != ""):
+        res = res.filter(Author.id == id)
+    if(nom != ""):
+        res = res.filter(Author.name == nom)
+    return res
+    
+def get_nb_livres_auteur(id):
+    return len(Book.query.filter(Book.author_id == id).all())
