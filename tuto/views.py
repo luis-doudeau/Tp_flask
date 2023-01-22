@@ -112,7 +112,6 @@ def Livres():
 
 @app.route('/AddLivre',methods=['POST'])
 def AddLivre():
-    print("a")
     TitreLivre = request.form["TitreLivre"]
     PrixLivre = int(request.form["PrixLivre"])
     UrlLivre = request.form["UrlLivre"]

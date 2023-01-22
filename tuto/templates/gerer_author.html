@@ -92,21 +92,12 @@
                             <input id="IDFiltre">
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="margin-top: 2px">
                         <div class="col-md-5">
                             <label for="NomFiltre" class="k-label">Nom de l'auteur</label>
                         </div>
                         <div class="col-md-7">
                             <input id="NomFiltre">
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-5">
-                            <label for="NbLivresFiltre" class="label label-primary">Nombre de livres</label>
-                        </div>
-                        <div class="col-md-7">
-                            <input  id="NbLivresFiltre">
                         </div>
                     </div>
                     
@@ -143,14 +134,6 @@
             });
             $("#NomFiltre").kendoTextBox({
                 placeholder: "Entrer le nom d'un auteur",
-                size : "medium",
-            });
-            
-            $("#NbLivresFiltre").kendoNumericTextBox({
-                culture: "fr-FR",
-                min:0,
-                placeholder: "Entrer le nombre de livres",
-                format: "{0:n0}",
                 size : "medium",
             });
 

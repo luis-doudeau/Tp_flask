@@ -22,56 +22,6 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="modal fade" id="modalSupprimer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Supprimer</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>Etes-vous sur de vouloir supprimer cet auteur ?</p>
-                  <span id="auteursupprimer"></span>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                  <button type="button" class="btn btn-danger" id="deleteAuteur" data-dismiss="modal">Supprimer</button>
-                </div>
-              </div>
-            </div>
-        </div>
-        <form method="POST">
-            <div class="modal fade" id="modalajouterAuteur" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Nouvel Auteur</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <div class="row">
-                            <div class="col-4">
-                                <label for="NomAuteur" class="label label-primary">Nom de l'auteur</label>
-                            </div>
-                            <div class="col-8">
-                                <input required id="NomAuteur" value="01/01/2022">
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-success" id="ajouterAuteur2">Créer</button>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </form>
         <div class="modal" id="modalFiltreAuteurs" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -90,21 +40,12 @@
                             <input id="IDFiltre">
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="margin-top: 2px">
                         <div class="col-md-5">
                             <label for="NomFiltre" class="k-label">Nom de l'auteur</label>
                         </div>
                         <div class="col-md-7">
                             <input id="NomFiltre">
-                        </div>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-5">
-                            <label for="NbLivresFiltre" class="label label-primary">Nombre de livres</label>
-                        </div>
-                        <div class="col-md-7">
-                            <input  id="NbLivresFiltre">
                         </div>
                     </div>
                     
