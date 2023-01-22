@@ -1,0 +1,194 @@
+{% extends 'baseBS.html' %}
+{% block content %}
+<body>
+    <section>
+        <div class="container " style="margin-top: 5em" >
+            <div class="row">
+                <div class="row">
+                    <div class="col-12 col-md-8"></div>
+                    <div class="col-6 col-md-4">
+                        <button id="Filtres" type="button" class="btn btn-success">Filtrer</button>
+                    </div>
+                </div>
+            </div>
+            <table id="auteurs" class="table table-striped" >
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Nombre de livres</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="modal fade" id="modalSupprimer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Supprimer</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Etes-vous sur de vouloir supprimer cet auteur ?</p>
+                  <span id="auteursupprimer"></span>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                  <button type="button" class="btn btn-danger" id="deleteAuteur" data-dismiss="modal">Supprimer</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <form method="POST">
+            <div class="modal fade" id="modalajouterAuteur" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nouvel Auteur</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="NomAuteur" class="label label-primary">Nom de l'auteur</label>
+                            </div>
+                            <div class="col-8">
+                                <input required id="NomAuteur" value="01/01/2022">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-success" id="ajouterAuteur2">Créer</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </form>
+        <div class="modal" id="modalFiltreAuteurs" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filtre<h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="IDFiltre" class="k-label">ID</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="IDFiltre">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="NomFiltre" class="k-label">Nom de l'auteur</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="NomFiltre">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="NbLivresFiltre" class="label label-primary">Nombre de livres</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input  id="NbLivresFiltre">
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-success" id="savefilter">Sauvegarder</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+</body>
+{% endblock %}
+{% block scripts %}
+<script>
+
+    $("#buttonmodalSupr").prop("disabled",true)
+    var row = null;
+    var table = null;
+        $(document).ready(function() {
+            $("#IDFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer l'id d'un auteur",
+                format: "{0:n0}",
+                size : "medium",
+            });
+            $("#NomFiltre").kendoTextBox({
+                placeholder: "Entrer le nom d'un auteur",
+                size : "medium",
+            });
+            
+            $("#NbLivresFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer le nombre de livres",
+                format: "{0:n0}",
+                size : "medium",
+            });
+
+            let table = $('#auteurs').DataTable({
+            ajax: {
+                url:"/api/dataAuteurs",
+                type:"POST",
+                data:function(c){
+                    if(c!=undefined){
+                        c.id = $("#IDFiltre").val();
+                        c.nom = $("#NomFiltre").val();
+                        c.nbLivres = $("#NbLivresFiltre").val();
+                    }
+                    return c
+                }
+            },
+            columns: [
+                {data: 'id',className: "dt-center"},
+                {data: 'nom',className: "dt-center"},
+                {data: 'nbLivres',className: "dt-center"},
+            ],
+            info:true,
+            scroller:true,
+            scrollY:500,
+            paging: false,
+            info: false,
+            "searching": false,
+        });
+
+        $("#auteurs").on("click", "tr", function() {
+            if(row !=null){
+                $(row).css('background-color', "");     
+            }
+            row = this;
+            $(this).css('background-color', "#AFE1AF");
+        });
+
+        $("#savefilter").on("click",function(){
+            table.ajax.reload();
+            $("#modalFiltreAuteurs").modal("hide")
+        });
+
+        $("#Filtres").on("click",function(){
+            $("#modalFiltreAuteurs").modal("show")
+        })
+        });
+
+</script>
+{% endblock %}

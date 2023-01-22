@@ -163,6 +163,10 @@ def LivreDetail(id):
 def ClientLivres():
     return render_template("livres.html", title= "Livres")
 
+@app.route("/Client/Auteurs")
+def ClientAuteurs():
+    return render_template("auteurs.html", title= "Auteurs")
+
 @app.route("/detail/<id>")
 def detail(id):
     book = get_book_id(int(id))
