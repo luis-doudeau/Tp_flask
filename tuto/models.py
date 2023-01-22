@@ -10,7 +10,7 @@ class Author(db.Model):
     name = db.Column(db.String(100))
 
     def __repr__(self):
-        return "<Author (%d) %s>" % (self.name)
+        return "%s" % (self.name)
 
 
 class Book(db.Model):

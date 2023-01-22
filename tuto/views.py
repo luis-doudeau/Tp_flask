@@ -50,9 +50,14 @@ def Auteurs():
 
 @app.route('/deleteAuteur', methods = ["POST"])
 def deleteAuteur():
-    save = delete_auteur(request.form["id"])
-    return "true" if save == True else save
-
+    auteur = get_author(request.form["id"])
+    db.session.delete(auteur)
+    try:
+        db.session.commit()
+        return "true"
+    except:
+        db.session.rollback()
+        return "false"
 
 @app.route("/api/dataBooks", methods = ["POST"])
 def dataBooks():
@@ -67,12 +72,12 @@ def dataBooks():
     auteur = request.form["auteur"]
     books = get_info_all_books(id, titre, prix, auteur).all()
     for livre in books:
-        data["data"].append({
-            "id" :livre.id,
-            "img" : livre.img,
-            "titre" : livre.title,
-            "prix" :livre.price,
-            "auteur" : livre.author.name
+            data["data"].append({
+                "id" :livre.id,
+                "img" : livre.img,
+                "titre" : livre.title,
+                "prix" :livre.price,
+                "auteur" : livre.author.__repr__()
         })
     
     return data
@@ -93,10 +98,16 @@ def AddLivre():
     save = ajouter_livre(TitreLivre, PrixLivre, UrlLivre, ImageLivre, IdAuteurLivre)
     return "true" if save == True else save
 
-@app.route('/deleteLivre', methods = ["POST"])
+@app.route("/deleteLivre",methods = ["POST"])
 def deleteLivre():
-    save = delete_livre(request.form["id"])
-    return "true" if save == True else save
+    livre = get_book_id(request.form["id"])
+    db.session.delete(livre)
+    try:
+        db.session.commit()
+        return "true"
+    except:
+        db.session.rollback()
+        return "false"
 
 
 
