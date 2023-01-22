@@ -57,6 +57,9 @@
                     <li class="nav-item">
                       <a class="nav-link" href="{{url_for('ClientAuteurs')}}">Auteurs</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{url_for('Admin')}}">Admin</a>
+                    </li>
                   </ul>
                   <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -75,9 +78,9 @@
             {% endblock %}
             </div>
         </main>
-        <footer class="footer mt-auto py-3 bg-light">
-            <div class="container">
-              <span class="text-muted">Réalisé par : Lenny DE NARDI & Luis DOUDEAU</span>
+        <footer class="footer mt-auto py-3 bg-dark" style="background-color: grey;">
+            <div class="container" >
+              <span class="text-white">Réalisé par : Lenny DE NARDI & Luis DOUDEAU</span>
             </div>
           </footer>
         {% block scripts %}
