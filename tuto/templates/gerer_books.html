@@ -270,6 +270,12 @@
             $("#modalFiltreLivres").modal("show")
         })
 
+        $("#livres").on("dblclick", "tr", function() {
+            const id = $(row)[0].childNodes[0].innerHTML
+            window.location = "{{url_for('LivreDetail',id='idLivre')}}".replace("idLivre",id)
+        
+        });
+
         const container = document.getElementById("modalAjouterLivre");
         const modal = new bootstrap.Modal(container);
         document.getElementById("ajouterLivre").addEventListener("click", function () {

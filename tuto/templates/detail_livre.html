@@ -1,0 +1,189 @@
+{% extends 'baseBS.html' %}
+
+{% block styles %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
+    #logout:hover, #login:hover{
+      background-color: rgb(67, 67, 67);
+    }
+    main{
+    height: 80vh;
+}
+#loader-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(82, 82, 82, 0.1); /* Opacité de 50% */
+        z-index: 999; /* Place l'élément en arrière-plan */
+    }
+
+    #loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centre l'SVG du loader */
+    }
+  </style>
+{{ bootstrap.load_css() }}
+{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container" style="margin-top: 1em;">
+    <div class="row">
+        <h1 for="InfoLivre"  >Livre</h1>
+    </div>
+
+    <div class="row" style="padding: 1em;">
+        <div class="col-sm-4" style="text-align: center;">
+            <h4 for="InfoLivre" style="color: blue;">Informations Livre</h4>
+            <img id="imgLivre" src="" alt="image">
+        </div>
+        <div class="col-sm-8">
+            <div class="row">
+                <input id="idLivre"/>
+            </div>
+            <div class="row">
+                <input id="TitreLivre"/>
+            </div>
+            <div class="row">
+                <input id="PrixLivre"/>
+            </div>
+            <div class="row">
+                <input id="AuteurLivre"/>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row" style="padding: 1em;">
+        <div class="col-sm-4">
+            <h4 for="InfoLivre" style="color: blue;">Informations Auteur</h4>
+        </div>
+        <div class="col-sm-8">
+            <div class="row">
+                <input id="url"/>
+            </div>
+            <div class="row">
+                <input id="ImageLivre"/>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row" style="margin: 1em 0;">
+        <div class="col-8"></div>
+        <div class="col-4 d-flex justify-content-end">
+            <button id="save" type="button" class="btn btn-success">Sauvegarder</button>
+        </div>
+
+    </div>
+</div>
+<div id="loader-background" style="display: none;">
+    <img id="loader" src="{{url_for('static', filename='images/loader.svg')}}"/>
+</div>
+</body>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+    $(document).ready(function(){
+
+        $("#imgLivre").attr("src","{{url_for('static',filename='images/imagename')}}".replace("imagename","{{livre.img}}"))
+        $("#TitreLivre").kendoTextBox({
+            label: "Titre",
+            value: '{{livre.title}}',
+            size: "full",
+            rounded: "medium",
+
+        });
+
+        $("#PrixLivre").kendoNumericTextBox({
+            size:"medium",
+            label :"Prix",
+            placeholder:"Prix du livre",
+            value: '{{livre.price}}',
+        });
+
+        $("#idLivre").kendoTextBox({
+            label: "ID",
+            value: '{{livre.id}}',
+            enable: false,
+        });
+        $("#AuteurLivre").kendoComboBox(
+            {dataSource: [],
+            label : "Auteur",
+            dataTextField: "name",
+            dataValueField: "name",
+            size:"medium",
+            placeholder:"Nom d'un auteur",
+        });
+
+        var listeAuthor = "{{auteurs}}".replaceAll("&#39;","").replaceAll("[","").replaceAll("]","").replaceAll(", ",",").split(",")
+        for(let i = 0; i<listeAuthor.length;i++){
+            $("#AuteurLivre").data("kendoComboBox").dataSource.add({name :listeAuthor[i]})
+        }
+
+        var combobox = $("#AuteurLivre").data("kendoComboBox");
+        if("{{isnew}}"  != "true"){
+            combobox.value('{{livre.author.name}}');
+        }
+
+        $("#url").kendoTextBox({
+            label: "URL achat du livre (amazon)",
+            value: '{{livre.url}}',
+        });
+        $("#ImageLivre").kendoTextBox({
+            label: "Nom de l'image",
+            value: '{{livre.img}}',
+        });
+
+
+        $("#save").on("click",function(){
+            $("#loader-background").show()
+            var id =  $("#idLivre").val()
+            var title = $("#TitreLivre").val()
+            var price = $("#PrixLivre").val()
+            var author = $("#AuteurLivre").data("kendoComboBox").text()
+            var url = $("#url").val()
+            var img = $("#ImageLivre").val()
+            var liste = []
+            $("#loader-background").show()
+            $('#genreschecked input[type=checkbox]:checked').each(function(){
+                liste.push(this.name)
+            })
+            $.ajax({
+                
+                url : '{{url_for("UpdateLivre")}}',
+                data:{
+                    "id":id,
+                    "title":title,
+                    "price":price,
+                    "author":author,
+                    "url":url,
+                    "img":img,
+                    "new": $(location).attr('pathname').split("/")[3] == "null" ? "true": "false"
+                },
+                type:'POST',
+                success:async function(response){
+                    if(response == "false"){
+                        alert("Problème lors de la sauvegarde")
+                    }else{
+                        await delay(1);
+                        $("#loader-background").hide()
+                    }
+                }
+            });
+        })
+        
+    });
+    function delay(n){
+        return new Promise(function(resolve){
+            setTimeout(resolve,n*1000);
+        });
+    }
+</script>
+{% endblock %}

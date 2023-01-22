@@ -146,3 +146,23 @@ def updateAuteur(id, nom):
         return True
     except :
         return False
+
+def get_auteur_by_name(name):
+    return Author.query.filter(Author.name == name).first()
+
+def updateLivre(id, titre, prix, url, img, author):
+    
+    livre = get_book_id(id)
+    
+    livre.title = titre
+    livre.price = prix
+    livre.url = url
+    livre.img = img
+    livre.author = get_auteur_by_name(author)
+    
+    try : 
+        db.session.commit()
+        return True
+    except :
+        db.session.rollback()
+        return False

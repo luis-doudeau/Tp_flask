@@ -1,8 +1,8 @@
 from crypt import methods
 from .app import app, db
 from flask import render_template, redirect, url_for, request
-from .models import Author, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
-get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur
+from .models import Author, Book, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
+get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre
 
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField
@@ -133,6 +133,31 @@ def deleteLivre():
         db.session.rollback()
         return "false"
 
+@app.route("/UpdateLivre",methods =["POST"])
+def UpdateLivre():
+    
+    id = request.form["id"]
+    title = request.form["title"]
+    price = request.form["price"]
+    author = request.form["author"]
+    url = request.form["url"]
+    img = request.form["img"]
+    new = request.form["new"]
+        
+    if(new == "false"):
+        save =  updateLivre(id, title, price, url, img, author)
+    else:
+        save = ajouter_livre(title, price, url, img, author)
+    
+    return "true" if save else "false"
+
+@app.route("/Admin/LivreDetail/<id>")
+def LivreDetail(id):
+    if(id == "null"):
+        return render_template(
+        "detail_livre.html", livre = Book("", "", "", "", Author("")), auteurs = Author.query.all())
+    return render_template(
+        "detail_livre.html", livre = get_book_id(id),auteurs = Author.query.all())
 
 
 @app.route("/detail/<id>")
