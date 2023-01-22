@@ -1,0 +1,190 @@
+{% extends 'baseBS.html' %}
+
+{% block styles %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap');
+    #logout:hover, #login:hover{
+      background-color: rgb(67, 67, 67);
+    }
+
+    main{
+    height: 80vh;
+}
+#loader-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(82, 82, 82, 0.1); /* Opacité de 50% */
+        z-index: 999; /* Place l'élément en arrière-plan */
+    }
+
+    #loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centre l'SVG du loader */
+    }
+  </style>
+{{ bootstrap.load_css() }}
+{% endblock %}
+
+{% block content %}
+<body>
+<div class="container" style="margin-top: 1em;">
+    <div class="row">
+        <h1 for="InfoP"  >Auteur</h1>
+    </div>
+
+    <div class="row" style="padding: 1em;">
+        <div class="col-sm-8">
+            <div class="">
+                <h4 for="InfoP" style="color: blue;">Informations Auteur</h4>
+            </div>
+            <div class="row">
+                <input id="IDAuteur"/>
+            </div>
+            <div class="row">
+                <input id="NameAuteur"/>
+            </div>            
+        </div>
+    </div>
+    <div class="row" style="padding: 1em;">
+
+        <div class="col-sm-4">
+            <div class="">
+                <h4 for="InfoP" style="color: blue;">Livres Auteurs</h4>
+            </div>
+            <div class="row">
+                <input id="LivresCombobox"/>
+            </div>
+            <div class="row">
+                <input id="IDLivre"></input>    
+            </div>
+            <div class="row">
+                <input id="PriceLivre"></input>    
+            </div>
+        </div>
+            <div class="col-sm-4" style="display: flex;justify-content: center;align-items: center;">
+                <img id="imageLivre" src="" alt="">
+            </div>
+    </div>
+    <div class="row" style="margin: 1em 0;">
+        <div class="col-8"></div>
+        <div class="col-4 d-flex justify-content-end">
+            <button id="save" type="button" class="btn btn-success">Sauvegarder</button>
+        </div>
+
+    </div>
+</div>
+<div id="loader-background" style="display: none;">
+    <img id="loader" src="{{url_for('static', filename='img/loader.svg')}}"/>
+</div>
+</body>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+    $(document).ready(function(){
+
+
+        $("#NameAuteur").kendoTextBox({
+            label: "Nom Auteur",
+            value: '{{auteur.name}}',
+            size: "full",
+            rounded: "medium",
+
+        });
+        
+
+        $("#PriceLivre").kendoNumericTextBox({
+            size:"medium",
+            label :"Prix",
+            enable : false,
+        });
+
+        $("#IDLivre").kendoTextBox({
+            label: "ID Livre",
+            enable: false,
+        });
+
+        $("#IDAuteur").kendoTextBox({
+            label: "ID Auteur",
+            value: '{{auteur.id}}',
+            enable: false,
+        });
+        $("#LivresCombobox").kendoComboBox(
+            {dataSource: [],
+            label : "Livres",
+            dataTextField: "name",
+            dataValueField: "name",
+            size:"medium",
+            placeholder:"Selectionner un livre de l'auteur",
+            index: 0,
+            change: function(e) {
+                var value = this.value();
+                $.ajax({
+                    url: "/api/dataBooks",
+                    type:"POST",
+                    data: {
+                        id: "",
+                        titre : value,
+                        prix : "",
+                        auteur : "",
+                        },
+                    success:function(d){
+                        console.log("data")
+                        console.log(d.data[0])
+                        $("#IDLivre").data("kendoTextBox").value(d.data[0].id)
+                        $("#PriceLivre").data("kendoNumericTextBox").value(d.data[0].prix)
+                        var url = "{{url_for('static',filename='./images/urlimage')}}".replace("urlimage",d.data[0].img)
+                        $("#imageLivre").attr("src",url)
+                        $("#imageLivre").attr("href",d.data[0].url)
+
+                    }
+                })
+            }
+        });
+
+        var listeLivresAuthor = "{{livres_auteur}}".replaceAll("&#39;","'").split("|")
+        console.log(listeLivresAuthor)
+        for(let i = 0; i<listeLivresAuthor.length-1;i++){
+            $("#LivresCombobox").data("kendoComboBox").dataSource.add({name :listeLivresAuthor[i]})
+        }
+        $("#save").on("click",function(){
+            $("#loader-background").show()
+            var id =  $("#IDAuteur").val()
+            var name = $("#NameAuteur").val()
+            $("#loader-background").show()
+            $.ajax({
+                
+                url : '{{url_for("UpdateAuteur")}}',
+                data:{
+                    "id":id,
+                    "name":name,
+                    "isnew": $(location).attr('pathname').split("/")[3] == "null" ? "true": "false"
+                },
+                type:'POST',
+                success:async function(response){
+                    if(response == "false"){
+                        alert("Problème lors de la sauvegarde")
+                    }else{
+                        await delay(1);
+                        $("#loader-background").hide()
+                    }
+                }
+            });
+        })
+        
+    });
+    function delay(n){
+        return new Promise(function(resolve){
+            setTimeout(resolve,n*1000);
+        });
+    }
+</script>
+{% endblock %}

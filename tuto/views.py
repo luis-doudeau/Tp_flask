@@ -1,8 +1,8 @@
 from crypt import methods
 from .app import app, db
 from flask import render_template, redirect, url_for, request
-from .models import get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
-get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur
+from .models import Author, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
+get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur
 
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField
@@ -58,6 +58,30 @@ def deleteAuteur():
     except:
         db.session.rollback()
         return "false"
+    
+@app.route("/Admin/AuteurDetail/<id>")
+def AuteurDetail(id):
+    if(id == "null"):
+        return render_template(
+        "detail_auteur.html",auteur=Author(""),livres_auteur ="")
+        
+    livre = ""
+    for l in Author.query.get(id).livres.all():
+        livre += l.__repr__() + "|" 
+    return render_template(
+        "detail_auteur.html",auteur=get_author(id),livres_auteur = livre)
+
+@app.route("/UpdateAuteur",methods =["POST"])
+def UpdateAuteur():
+    name = request.form["name"]
+    id = request.form["id"]
+    new = request.form["isnew"]
+    if(new == "false"):
+        save = updateAuteur(id,name)
+    else:
+        save = ajouter_auteur(name)
+    
+    return "true" if save else "false"
 
 @app.route("/api/dataBooks", methods = ["POST"])
 def dataBooks():

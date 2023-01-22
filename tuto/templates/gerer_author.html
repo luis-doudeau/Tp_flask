@@ -202,6 +202,11 @@
             $("#auteursupprimer").html($(row)[0].childNodes[2].innerHTML)
         });
 
+        $("#auteurs").on("dblclick", "tr", function() {
+            const id = $(row)[0].childNodes[0].innerHTML
+            window.location = "{{url_for('AuteurDetail',id='idAuteur')}}".replace("idAuteur",id)
+        });
+
         $("#savefilter").on("click",function(){
             table.ajax.reload();
             $("#modalFiltreAuteurs").modal("hide")

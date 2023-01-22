@@ -8,6 +8,7 @@ class Author(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+    livres = db.relationship('Book', backref='livres', lazy='dynamic')
 
     def __repr__(self):
         return "%s" % (self.name)
@@ -37,7 +38,7 @@ class Book(db.Model):
         self.author_id = author_id
                 
     def __repr__(self):
-      return "<Book %s>" % (self.title)
+      return "%s" % (self.title)
 
 
 def get_sample():
@@ -136,3 +137,12 @@ def get_all_info_auteurs(id, nom):
     
 def get_nb_livres_auteur(id):
     return len(Book.query.filter(Book.author_id == id).all())
+
+def updateAuteur(id, nom):
+    auteur = get_author(id)
+    auteur.name = nom
+    try : 
+        db.session.commit()
+        return True
+    except :
+        return False
