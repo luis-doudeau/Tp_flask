@@ -159,6 +159,9 @@ def LivreDetail(id):
     return render_template(
         "detail_livre.html", livre = get_book_id(id),auteurs = Author.query.all())
 
+@app.route("/Client/Livres")
+def ClientLivres():
+    return render_template("livres.html", title= "Livres")
 
 @app.route("/detail/<id>")
 def detail(id):

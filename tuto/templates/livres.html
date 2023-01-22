@@ -1,0 +1,175 @@
+{% extends 'baseBS.html' %}
+{% block content %}
+<body>
+    <section>
+        <div class="container " style="margin-top: 5em" >
+            <div class="row">
+                <div class="row">
+                    <div class="col-12 col-md-8"></div>
+                    <div class="col-6 col-md-4">
+                        <button id="Filtres" type="button" class="btn btn-success">Filtrer</button>
+                    </div>
+                </div>
+            </div>
+            <table id="livres" class="table table-striped" >
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Titre</th>
+                        <th>Prix</th>
+                        <th>Auteur</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    
+        <div class="modal" id="modalFiltreLivres" tabindex="2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filtre<h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="IDFiltre" class="k-label">ID</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="IDFiltre">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="TitreFiltre" class="k-label">Titre</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="TitreFiltre">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="PrixFiltre" class="label label-primary">Prix</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input  id="PrixFiltre">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="AuteurFiltre" class="label label-primary">Auteur</label>
+                        </div>
+                        <div class="col-md-7">
+                            <input id="AuteurFiltre">
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-success" id="savefilter">Sauvegarder</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+</body>
+{% endblock %}
+{% block scripts %}
+<script>
+
+
+    $("#buttonmodalSupr").prop("disabled",true)
+    var row = null;
+    var table = null;
+        $(document).ready(function() {
+            $("#IDFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer l'id d'un livre",
+                format: "{0:n0}",
+                size : "medium",
+            });
+            $("#TitreFiltre").kendoTextBox({
+                placeholder: "Entrer le nom d'un livre",
+                size : "medium",
+            });
+            
+            $("#PrixFiltre").kendoNumericTextBox({
+                culture: "fr-FR",
+                min:0,
+                placeholder: "Entrer le prix d'un livre",
+                format: "{0:n0}",
+                size : "medium",
+            });
+
+            $("#AuteurFiltre").kendoTextBox({
+                placeholder: "Entrer le nom d'un auteur",
+                size : "medium",
+            });
+
+            let table = $('#livres').DataTable({
+                ajax: {
+                    url:"/api/dataBooks",
+                    type:"POST",
+                    data:function(c){
+                        if(c!=undefined){
+                            c.id = $("#IDFiltre").val();
+                            c.titre = $("#TitreFiltre").val();
+                            c.prix = $("#PrixFiltre").val();
+                            c.auteur = $("#AuteurFiltre").val();
+                        }
+                        return c
+                    }
+                },
+                columns: [
+                    {data: 'id',className: "dt-center"},
+                    {data: 'img',className: "dt-center", render: function(data){
+                        return "<img src={{url_for('static', filename = 'images/Livres')}} alt='Image introuvable'> ".replace('Livres', data)
+                    }},
+                    {data: 'titre',className: "dt-center"},
+                    {data: 'prix',className: "dt-center", render:function(data){
+                        return data + "€"
+                    }},
+                    {data: 'auteur',className: "dt-center"},
+                ],
+                info:true,
+                scroller:true,
+                scrollY:500,
+                paging: false,
+                info: false,
+                "searching": false,
+            });
+
+        $("#livres").on("click", "tr", function() {
+            if(row !=null){
+                $(row).css('background-color', "");     
+            }
+            row = this;
+            $(this).css('background-color', "#AFE1AF");
+        });
+
+        $("#savefilter").on("click",function(){
+            table.ajax.reload();
+            $("#modalFiltreLivres").modal("hide")
+        });
+
+        $("#Filtres").on("click",function(){
+            $("#modalFiltreLivres").modal("show")
+        })
+
+        $("#livres").on("dblclick", "tr", function() {
+            const id = $(row)[0].childNodes[0].innerHTML
+            window.location = "{{url_for('detail',id='idLivre')}}".replace("idLivre",id)
+        
+        });
+    });
+
+</script>
+{% endblock %}
