@@ -2,16 +2,40 @@ from crypt import methods
 from .app import app, db
 from flask import render_template, redirect, url_for, request
 from .models import Author, Book, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
-get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre
-
+get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre, User
+from flask_login import login_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField , HiddenField
-from wtforms . validators import DataRequired
+from wtforms import StringField , HiddenField, PasswordField
+from wtforms.validators import DataRequired
+from hashlib import sha256
 
 
 class AuthorForm(FlaskForm):
     id = HiddenField("id")
     name = StringField("Nom", validators= [DataRequired()])
+
+class LoginForm(FlaskForm):
+    username = StringField('Username')
+    password = PasswordField('Password')
+
+    def get_authenticated_user(self):
+        user = User.query.get(self.username.data)
+        if user is None:
+            return None
+        m = sha256 ()
+        m.update(self.password.data.encode())
+        passwd = m.hexdigest()
+        return user if passwd == user.password else None
+
+@app.route ("/login", methods =("GET","POST",))
+def login():
+    f = LoginForm()
+    if f.validate_on_submit():
+        user = f.get_authenticated_user()
+        if user:
+            login_user (user)
+            return redirect (url_for("home"))
+    return render_template ("login.html", form=f)
 
 @app.route("/")
 def home():
