@@ -3,7 +3,7 @@ from .app import app, db
 from flask import render_template, redirect, url_for, request
 from .models import Author, Book, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
 get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre, User
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_required, login_user, current_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField, PasswordField
 from wtforms.validators import DataRequired
@@ -17,6 +17,7 @@ class AuthorForm(FlaskForm):
 class LoginForm(FlaskForm):
     username = StringField('Username')
     password = PasswordField('Password')
+    next = HiddenField ()
 
     def get_authenticated_user(self):
         user = User.query.get(self.username.data)
@@ -30,11 +31,14 @@ class LoginForm(FlaskForm):
 @app.route ("/login", methods =("GET","POST",))
 def login():
     f = LoginForm()
-    if f.validate_on_submit():
+    if not f.is_submitted():
+        f.next.data = request.args.get("next")
+    elif f.validate_on_submit():
         user = f.get_authenticated_user()
         if user:
-            login_user (user)
-            return redirect (url_for("home"))
+            login_user(user)
+            next = f.next.data or url_for("home")
+            return redirect(next)
     return render_template ("login.html", form=f)
 
 @app.route ("/logout")
@@ -67,6 +71,7 @@ def dataAuteurs():
     return data
 
 @app.route('/AddAuteur',methods=['POST'])
+@login_required
 def AddAuteur():
     nomAuteur = request.form["NomAuteur"]
 
@@ -74,10 +79,12 @@ def AddAuteur():
     return "true" if save == True else save
 
 @app.route('/Auteurs')
+@login_required
 def Auteurs():
     return render_template("gerer_author.html", title= "Auteurs")
 
 @app.route('/deleteAuteur', methods = ["POST"])
+@login_required
 def deleteAuteur():
     auteur = get_author(request.form["id"])
     db.session.delete(auteur)
@@ -89,6 +96,7 @@ def deleteAuteur():
         return "false"
     
 @app.route("/Admin/AuteurDetail/<id>")
+@login_required
 def AuteurDetail(id):
     if(id == "null"):
         return render_template(
@@ -101,6 +109,7 @@ def AuteurDetail(id):
         "detail_auteur.html",auteur=get_author(id),livres_auteur = livre)
 
 @app.route("/UpdateAuteur",methods =["POST"])
+@login_required
 def UpdateAuteur():
     name = request.form["name"]
     id = request.form["id"]
@@ -113,6 +122,7 @@ def UpdateAuteur():
     return "true" if save else "false"
 
 @app.route("/api/dataBooks", methods = ["POST"])
+@login_required
 def dataBooks():
     data = {"data":[]}
 
@@ -136,10 +146,12 @@ def dataBooks():
     return data
 
 @app.route('/Livres')
+@login_required
 def Livres():
     return render_template("gerer_books.html", title= "Livres")
 
 @app.route('/AddLivre',methods=['POST'])
+@login_required
 def AddLivre():
     TitreLivre = request.form["TitreLivre"]
     PrixLivre = int(request.form["PrixLivre"])
@@ -151,6 +163,7 @@ def AddLivre():
     return "true" if save == True else save
 
 @app.route("/deleteLivre",methods = ["POST"])
+@login_required
 def deleteLivre():
     livre = get_book_id(request.form["id"])
     db.session.delete(livre)
@@ -162,6 +175,7 @@ def deleteLivre():
         return "false"
 
 @app.route("/UpdateLivre",methods =["POST"])
+@login_required
 def UpdateLivre():
     
     id = request.form["id"]
@@ -180,6 +194,7 @@ def UpdateLivre():
     return "true" if save else "false"
 
 @app.route("/Admin/LivreDetail/<id>")
+@login_required
 def LivreDetail(id):
     if(id == "null"):
         return render_template(
@@ -188,31 +203,30 @@ def LivreDetail(id):
         "detail_livre.html", livre = get_book_id(id),auteurs = Author.query.all())
 
 @app.route("/Client/Livres")
+@login_required
 def ClientLivres():
     return render_template("livres.html", title= "Livres")
 
 @app.route("/Client/Auteurs")
+@login_required
 def ClientAuteurs():
     return render_template("auteurs.html", title= "Auteurs")
 
 @app.route("/Admin")
+@login_required
 def Admin():
     return render_template("admin.html", title= "Admin")
 
 @app.route("/detail/<id>")
+@login_required
 def detail(id):
     book = get_book_id(int(id))
     return render_template(
         "detail.html",
         book=book)
 
-@app.route("/edit/author/<int:id>") 
-def edit_author(id):
-    a = get_author(id)
-    f = AuthorForm(id=a.id, name = a.name)
-    return render_template("edit_author.html", author=a, form = f)
-
 @app.route ("/save/author/", methods =("POST" ,))
+@login_required
 def save_author():
     a = None
     f = AuthorForm ()

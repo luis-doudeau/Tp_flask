@@ -137,8 +137,6 @@
                         auteur : "",
                         },
                     success:function(d){
-                        console.log("data")
-                        console.log(d.data[0])
                         $("#IDLivre").data("kendoTextBox").value(d.data[0].id)
                         $("#PriceLivre").data("kendoNumericTextBox").value(d.data[0].prix)
                         var url = "{{url_for('static',filename='./images/urlimage')}}".replace("urlimage",d.data[0].img)
