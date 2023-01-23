@@ -1,6 +1,6 @@
-from .app import db
+from .app import db, login_manager
 from sqlalchemy.sql.expression import func
-
+from flask_login import UserMixin
 
 class Author(db.Model):
     """
@@ -30,7 +30,7 @@ class Book(db.Model):
     author = db.relationship("Author",
                 backref=db.backref("books", lazy="dynamic"))
 
-    def __init__(self,price,title,url,img,author_id):
+    def __init__(self, price, title, url, img, author_id):
         self.price = price
         self.title = title
         self.url = url
@@ -40,6 +40,16 @@ class Book(db.Model):
     def __repr__(self):
       return "%s" % (self.title)
 
+class User(db.Model, UserMixin):
+    username = db.Column(db.String(50), primary_key = True)
+    password = db.Column(db.String(64))
+
+@login_manager.user_loader
+def load_user(username):
+    return User.query.get(username)
+
+def get_id (self):
+    return self.username
 
 def get_sample():
     return Book.query.limit(10).all()
