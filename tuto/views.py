@@ -3,7 +3,7 @@ from .app import app, db
 from flask import render_template, redirect, url_for, request
 from .models import Author, Book, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
 get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre, User
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField, PasswordField
 from wtforms.validators import DataRequired
@@ -36,6 +36,11 @@ def login():
             login_user (user)
             return redirect (url_for("home"))
     return render_template ("login.html", form=f)
+
+@app.route ("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 @app.route("/")
 def home():

@@ -61,10 +61,12 @@
                       <a class="nav-link" href="{{url_for('Admin')}}">Admin</a>
                     </li>
                   </ul>
-                  <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                  </form>
+                  <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_authenticated()%}
+                    <li ><a>{{ current_user.username }}</a></li >
+                    <li ><a href="{{url_for('logout')}}"><span class=" glyphicon glyphicon-log-out" title ="Logout"></span ></a></li >
+                    {% endif %}
+                    </ul >
                 </div>
               </div>
             </nav>
