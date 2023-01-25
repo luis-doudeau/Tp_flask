@@ -8500,12 +8500,18 @@ h1, h2, h3, h4, h5,
 .card-img-{
   width:15%;
   height:auto;
-  background-color: #17a2b8;
+  background-color: #030b73;
   position: relative;
-  top : -25px;
+  top : -35px;
   padding : 12px;
   border-radius: 15px;
 
+}
+
+
+.gestion:hover {
+  transform: scale(1.10);
+  transition: all 0.3s ease-in-out;
 }
 
 
@@ -8551,5 +8557,9 @@ h1, h2, h3, h4, h5,
 }
 select::-ms-expand { /* for IE 11 */
   display: none;
+}
+
+.gestionSecretaire{
+  margin-top : 50%;
 }
 

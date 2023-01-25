@@ -1,6 +1,8 @@
-from .app import db, login_manager
+from .app import app, db, login_manager
 from sqlalchemy.sql.expression import func
 from flask_login import UserMixin
+import yaml, os.path
+import click
 
 class Author(db.Model):
     """
@@ -48,15 +50,15 @@ class User(db.Model, UserMixin):
     def get_id(self):
         return self.username
 
-@login_manager.user_loader
-def load_user(username):
+    
+def get_user(username) : 
     return User.query.get(username)
 
 def get_id (self):
     return self.username
 
 def get_sample():
-    return Book.query.limit(10).all()
+    return Book.query.limit(30).all()
 
 def get_book_id(id):
     return Book.query.get(id)

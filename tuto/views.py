@@ -1,14 +1,24 @@
 from crypt import methods
-from .app import app, db
+from .app import app, db, login_manager
 from flask import render_template, redirect, url_for, request
 from .models import Author, Book, get_sample, get_book_id, get_author, get_info_all_books, delete_livre, ajouter_livre,\
-get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre, User
+get_all_info_auteurs, get_nb_livres_auteur, delete_auteur, ajouter_auteur, updateAuteur, updateLivre, User, get_user
 from flask_login import login_required, login_user, current_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField , HiddenField, PasswordField
 from wtforms.validators import DataRequired
 from hashlib import sha256
+import click
 
+
+@login_manager.user_loader
+def load_user(username):
+    return get_user(username)
+
+
+@app.route("/")
+def home():
+    return render_template("booksBS.html", title="Mes Livres !", books=get_sample())
 
 class AuthorForm(FlaskForm):
     id = HiddenField("id")
@@ -28,7 +38,8 @@ class LoginForm(FlaskForm):
         passwd = m.hexdigest()
         return user if passwd == user.password else None
 
-@app.route ("/login", methods =("GET","POST",))
+
+@app.route ("/login", methods =("GET","POST"))
 def login():
     f = LoginForm()
     if not f.is_submitted():
@@ -41,17 +52,19 @@ def login():
             return redirect(next)
     return render_template ("login.html", form=f)
 
+
 @app.route ("/logout")
 def logout():
     logout_user()
     return redirect("/")
 
-@app.route("/")
-def home():
-    return render_template(
-        "booksBS.html", 
-        title="My Books !",
-        books=get_sample())
+@app.route("/admin")
+def admin():
+    print(current_user)
+    if current_user.isadmin :
+        return render_template("admin.html")
+    else : 
+        return render_template("booksBS.html", title="My Books !", books=get_sample())
 
 @app.route("/api/dataAuteurs", methods = ["POST"])
 @login_required

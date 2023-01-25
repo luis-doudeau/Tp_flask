@@ -1,9 +1,23 @@
 import yaml, os.path
 import click
 from .app import app, db
-from .models import Author, Book
+from .models import Author, Book, User
 
 
+
+
+@app.cli.command()
+@click.argument("username")
+@click.argument("password")
+def passwd(username , password):
+    """Change password of User """
+    from .models import get_user
+    from hashlib import sha256
+    user = get_user(username)
+    m = sha256()
+    m.update(password.encode())
+    user.password = m.hexdigest()
+    db.session.commit()
 
 
 @app.cli.command()
