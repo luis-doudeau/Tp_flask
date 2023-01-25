@@ -4,18 +4,7 @@ from .app import app, db
 from .models import Author, Book
 
 
-app.cli.command()
-@click.argument('username')
-@click.argument('password')
-def newuser(username , password):
-    "Add a new user."
-    from.models import User
-    from hashlib import sha256
-    m = sha256()
-    m.update(password.encode())
-    u = User(username = username, password = m.hexdigest())
-    db.session.add(u)
-    db.session.commit()
+
 
 @app.cli.command()
 def syncdb():
@@ -64,3 +53,19 @@ def loaddb(filename):
 
 
 
+@app.cli.command()
+@click.argument('username')
+@click.argument('password')
+@click.argument('admin')
+def newuser(username , password, admin):
+    "Add a new user."
+    from.models import User
+    from hashlib import sha256
+    m = sha256()
+    m.update(password.encode())
+    if admin == "True":
+        u = User(username = username, password = m.hexdigest(), admin = True)
+    else:
+        u = User(username = username, password = m.hexdigest(), admin = False)
+    db.session.add(u)
+    db.session.commit()

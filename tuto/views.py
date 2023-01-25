@@ -44,7 +44,7 @@ def login():
 @app.route ("/logout")
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect("/")
 
 @app.route("/")
 def home():
@@ -54,6 +54,7 @@ def home():
         books=get_sample())
 
 @app.route("/api/dataAuteurs", methods = ["POST"])
+@login_required
 def dataAuteurs():
     data = {"data":[]}
     id = request.form["id"]
@@ -81,6 +82,9 @@ def AddAuteur():
 @app.route('/Auteurs')
 @login_required
 def Auteurs():
+    if not current_user.admin:
+        return redirect("/")
+
     return render_template("gerer_author.html", title= "Auteurs")
 
 @app.route('/deleteAuteur', methods = ["POST"])
@@ -148,6 +152,8 @@ def dataBooks():
 @app.route('/Livres')
 @login_required
 def Livres():
+    if not current_user.admin:
+        return redirect("/")
     return render_template("gerer_books.html", title= "Livres")
 
 @app.route('/AddLivre',methods=['POST'])
@@ -215,6 +221,8 @@ def ClientAuteurs():
 @app.route("/Admin")
 @login_required
 def Admin():
+    if not current_user.admin:
+        return redirect("/")
     return render_template("admin.html", title= "Admin")
 
 @app.route("/detail/<id>")

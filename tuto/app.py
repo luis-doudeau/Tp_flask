@@ -21,3 +21,5 @@ app. config ['SECRET_KEY'] = "069b85f6-3d1a-4c89-8d17-83e9b577da10"
 app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
 login_manager = LoginManager (app)
+login_manager.login_view = 'login'
+

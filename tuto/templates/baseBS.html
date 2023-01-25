@@ -57,14 +57,21 @@
                     <li class="nav-item">
                       <a class="nav-link" href="{{url_for('ClientAuteurs')}}">Auteurs</a>
                     </li>
+                    {% if current_user.admin%}
                     <li class="nav-item">
                       <a class="nav-link" href="{{url_for('Admin')}}">Admin</a>
                     </li>
+                    {% endif %}
                   </ul>
                   <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated%}
-                    <li ><a>{{ current_user.username }}</a></li >
-                    <li ><a href="{{url_for('logout')}}"><span class=" glyphicon glyphicon-log-out" title ="Logout"></span ></a></li >
+                    <img src="{{url_for('static', filename='img/user.png')}}" alt="" style="height: 4em">
+                    <li ><a style="color: white" href="{{url_for('logout')}}">{{ current_user.username }}</a></li >
+                    {% else %}
+                    <div class="" style="display: flex; align-items: center;justify-content: end;padding: 0;">
+                      <img src="{{url_for('static', filename='img/user.png')}}" alt="" style="height: 4em">
+                      <a href="{{url_for('login')}}" id="connexion" style="font-weight:bold;font-size: 1.2em;margin: 0 3em 0 1em;">Se connecter</a>
+                     </div>
                     {% endif %}
                   </ul >
                 </div>

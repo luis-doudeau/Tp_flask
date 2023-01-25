@@ -43,6 +43,10 @@ class Book(db.Model):
 class User(db.Model, UserMixin):
     username = db.Column(db.String(50), primary_key = True)
     password = db.Column(db.String(64))
+    admin = db.Column(db.Boolean)
+
+    def get_id(self):
+        return self.username
 
 @login_manager.user_loader
 def load_user(username):
