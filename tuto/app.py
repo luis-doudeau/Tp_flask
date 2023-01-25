@@ -19,5 +19,7 @@ from flask_sqlalchemy import SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = ('sqlite:///' + mkpath('../books.db'))
 app. config ['SECRET_KEY'] = "069b85f6-3d1a-4c89-8d17-83e9b577da10"
 app.config["SQLALCHEMY_ECHO"] = True
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 db = SQLAlchemy(app)
-login_manager = LoginManager (app)

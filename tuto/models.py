@@ -1,6 +1,8 @@
-from .app import db, login_manager
+from .app import app, db, login_manager
 from sqlalchemy.sql.expression import func
 from flask_login import UserMixin
+import yaml, os.path
+import click
 
 class Author(db.Model):
     """
@@ -43,16 +45,24 @@ class Book(db.Model):
 class User(db.Model, UserMixin):
     username = db.Column(db.String(50), primary_key = True)
     password = db.Column(db.String(64))
+    isadmin = db.Column(db.Boolean)
+    
+    def __repr__(self):
+      return "%s" % ("username : "+self.username + " pw :" + self.password + " admin : " + str(self.isadmin))
+    
+    
+def verif_user(username, password) : 
+    return (User.query.filter(User.username == username).filter(User.password == password).first()) is not None
 
-@login_manager.user_loader
-def load_user(username):
+    
+def get_user(username) : 
     return User.query.get(username)
 
 def get_id (self):
     return self.username
 
 def get_sample():
-    return Book.query.limit(10).all()
+    return Book.query.limit(30).all()
 
 def get_book_id(id):
     return Book.query.get(id)

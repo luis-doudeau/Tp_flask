@@ -1,21 +1,40 @@
 import yaml, os.path
 import click
 from .app import app, db
-from .models import Author, Book
+from .models import Author, Book, User
 
 
-app.cli.command()
-@click.argument('username')
-@click.argument('password')
-def newuser(username , password):
-    "Add a new user."
-    from.models import User
+@app.cli.command()
+@click.argument("username")
+@click.argument("password")
+@click.argument("isadmin")
+def newuser(username , password,isadmin):
+    """Adds a new user. """
     from hashlib import sha256
     m = sha256()
     m.update(password.encode())
-    u = User(username = username, password = m.hexdigest())
+    if(isadmin == "True"):
+         u = User(username =username, password=password, isadmin = True)
+    else:
+         u = User(username =username, password=password, isadmin = False)
+    
     db.session.add(u)
     db.session.commit()
+
+
+@app.cli.command()
+@click.argument("username")
+@click.argument("password")
+def passwd(username , password):
+    """Change password of User """
+    from .models import get_user
+    from hashlib import sha256
+    user = get_user(username)
+    m = sha256()
+    m.update(password.encode())
+    user.password = m.hexdigest()
+    db.session.commit()
+
 
 @app.cli.command()
 def syncdb():
