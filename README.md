@@ -7,7 +7,7 @@
 1/ pip install -r requirement.txt\
 2/ cd tuto/\
 3/ flask run \
-4/ Cliquez sur ctrl + le lien dans le terminal (127.0.0.1/5000)\
+4/ Cliquez sur ctrl + le lien dans le terminal (127.0.0.1/5000)
 
 
 # Fonctionalités Totalement Réalisées :
