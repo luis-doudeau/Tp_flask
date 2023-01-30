@@ -12,8 +12,8 @@
 
 # Fonctionalités Totalement Réalisées :
 
-1/ Affichage paginé livres, détails (au click ou au survol)
-2/ Intégration Bootstrap ou autre lib de CSS
+1/ Affichage paginé livres, détails (au click ou au survol)\
+2/ Intégration Bootstrap ou autre lib de CSS\
 3/ Edition/Suppression/Update Auteurs (modification se fait en double clickant sur la ligne du auteur)
 4/ Edition/Suppression/Update Livres  (modification se fait en double clickant sur la ligne du livre)
 5/ Recherche avancée dans les albums (par auteur, titre, prix, etc.). Bouton Filtre en vert. 
