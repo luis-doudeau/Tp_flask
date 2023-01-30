@@ -17,13 +17,11 @@
 3/ Edition/Suppression/Update Auteurs (modification se fait en double clickant sur la ligne du auteur)\
 4/ Edition/Suppression/Update Livres  (modification se fait en double clickant sur la ligne du livre)\
 5/ Recherche avancée dans les albums (par auteur, titre, prix, etc.). Bouton Filtre en vert. \
-6/ commande d'import de données (loaddb). Dans le fichier commands.py\
-7/ commande de création des tables (syncdb). Dans le fichiers commandes.py\
+6/ Commande d'import de données (loaddb). Dans le fichier commands.py\
+7/ Commande de création des tables (syncdb). Dans le fichiers commandes.py\
+8/ Login (commandes newuser, password) avec limitation des pages d'édition aux utilisateurs authentifiés.
 
+Voici les Users qui existent dans notre BD : 
 
-# Fonctionalités En partie Réalisées :
-
-1/ Login (commandes newuser, password) avec limitation des pages d'édition aux utilisateurs authentifiés.\
-Nous avons implémenté les méthodes : Classe LoginForm avec get_authenticated_user, Classe User, et méthodes newuser ainsi que passwd.
-
-Nous avons enlevé les @login_required de notre fichiers views.py afin que vous puissiez tout de même consulter le module Admin.
+Admin : identifiant : "admin", mot de passe : "admin"
+User : identifiant : "reader", mot de passe : "reader"
