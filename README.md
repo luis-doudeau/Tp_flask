@@ -26,4 +26,4 @@
 1/ Login (commandes newuser, password) avec limitation des pages d'édition aux utilisateurs authentifiés.\
 Nous avons implémenté les méthodes : Classe LoginForm avec get_authenticated_user, Classe User, et méthodes newuser ainsi que passwd.
 
-Nous avons enlevé les @login_required de notre fichiers views.py afin que vous puissiez tout de même consulter le module Admin.\
+Nous avons enlevé les @login_required de notre fichiers views.py afin que vous puissiez tout de même consulter le module Admin.
