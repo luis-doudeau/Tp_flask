@@ -24,4 +24,4 @@
 Voici les Users qui existent dans notre BD :\
 
 1/ Admin : identifiant : "admin", mot de passe : "admin"\
-2/ User : identifiant : "toto", mot de passe : "toto"
+2/ Reader : identifiant : "toto", mot de passe : "toto"
