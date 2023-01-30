@@ -21,7 +21,7 @@
 7/ Commande de création des tables (syncdb). Dans le fichiers commandes.py\
 8/ Login (commandes newuser, password) avec limitation des pages d'édition aux utilisateurs authentifiés.
 
-Voici les Users qui existent dans notre BD : 
+Voici les Users qui existent dans notre BD :\
 
-Admin : identifiant : "admin", mot de passe : "admin"
-User : identifiant : "reader", mot de passe : "reader"
+1/ Admin : identifiant : "admin", mot de passe : "admin"\
+2/ User : identifiant : "reader", mot de passe : "reader"
